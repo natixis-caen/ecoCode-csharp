@@ -72,4 +72,40 @@ public sealed class DontConcatenateStringsInLoopsTests
             }
         }
         """).ConfigureAwait(false);
+
+
+    [TestMethod]
+    public async Task DontConcatenateStringsInLoopsForEachAsync() => await VerifyAsync("""
+        using System.Collections.Generic;
+
+        public class Test
+        {
+            public static void Run(string s0)
+            {
+                string s = "";
+
+                List<int> numbers = [ 0, 1, 1, 2, 3, 5, 8, 13 ];
+
+                foreach (var i in numbers) {
+                    [|s += i;|]
+                }
+            }
+        }
+        """).ConfigureAwait(false);
+
+    [TestMethod]
+    public async Task DontConcatenateStringsInLoopsLinqForEachAsync() => await VerifyAsync("""
+        using System.Collections.Generic;
+        public class Test
+        {
+            public static void Run(string s0)
+            {
+                string s = "";
+
+                List<int> numbers = [ 0, 1, 1, 2, 3, 5, 8, 13 ];
+
+                numbers.ForEach(i => [|s += i|]);
+            }
+        }
+        """).ConfigureAwait(false);
 }
